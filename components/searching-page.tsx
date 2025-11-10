@@ -3,16 +3,20 @@ import { motion } from "framer-motion"
 
 interface SearchingPageProps {
   onNavigate: () => void
-  pickupLocation?: string
-  dropLocation?: string
-  selectedRide?: string
+  pickupLocation: string
+  dropLocation: string
+  selectedRide: string
+  pickupCoords: { lat: number; lng: number }
+  dropCoords: { lat: number; lng: number }
 }
 
 export default function SearchingPage({
   onNavigate,
-  pickupLocation = "Pickup",
-  dropLocation = "Drop-off",
-  selectedRide = "Cab",
+  pickupLocation,
+  dropLocation,
+  selectedRide,
+  pickupCoords,
+  dropCoords,
 }: SearchingPageProps) {
   return (
     <motion.div
@@ -70,9 +74,16 @@ export default function SearchingPage({
           className="bg-gray-50 rounded-2xl p-4 mb-8 text-left border-2 border-border"
         >
           <p className="text-xs text-gray-600 uppercase tracking-wide font-semibold mb-1 font-montserrat">From</p>
-          <p className="text-black font-bold mb-3 font-montserrat">{pickupLocation}</p>
+          <p className="text-black font-bold mb-1 font-montserrat">{pickupLocation}</p>
+          <p className="text-xs text-gray-500 font-montserrat mb-3">
+            ({pickupCoords.lat.toFixed(5)}, {pickupCoords.lng.toFixed(5)})
+          </p>
+
           <p className="text-xs text-gray-600 uppercase tracking-wide font-semibold mb-1 font-montserrat">To</p>
-          <p className="text-black font-bold font-montserrat">{dropLocation}</p>
+          <p className="text-black font-bold mb-1 font-montserrat">{dropLocation}</p>
+          <p className="text-xs text-gray-500 font-montserrat">
+            ({dropCoords.lat.toFixed(5)}, {dropCoords.lng.toFixed(5)})
+          </p>
         </motion.div>
 
         {/* Cancel Search Button */}

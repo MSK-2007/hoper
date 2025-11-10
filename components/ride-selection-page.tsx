@@ -20,8 +20,15 @@ export default function RideSelectionPage({
   pickupCoords = { lat: 12.9716, lng: 77.5946 },
   dropCoords = { lat: 12.9352, lng: 77.6245 },
 }: RideSelectionPageProps) {
-  const distance = calculateDistance(pickupCoords.lat, pickupCoords.lng, dropCoords.lat, dropCoords.lng)
-  const eta = Math.round(calculateETA(distance).split(" ")[0])
+  const distance = calculateDistance(
+  pickupCoords.lat,
+  pickupCoords.lng,
+  dropCoords.lat,
+  dropCoords.lng
+)
+
+const etaString = calculateETA(distance)
+const eta = Math.round(parseFloat(etaString.split(" ")[0]))
 
   const rideOptions = [
     {

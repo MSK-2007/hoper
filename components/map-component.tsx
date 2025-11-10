@@ -2,6 +2,13 @@
 
 import { useEffect, useRef } from "react"
 
+// ✅ Tell TypeScript about Leaflet on the window object
+declare global {
+  interface Window {
+    L?: any
+  }
+}
+
 interface MapComponentProps {
   pickupLocation?: string
   dropLocation?: string
@@ -22,7 +29,7 @@ export default function MapComponent({
   const markersRef = useRef<any[]>([])
 
   useEffect(() => {
-    // Dynamically load Leaflet CSS
+    // ✅ Load Leaflet CSS if not already loaded
     if (!document.querySelector('link[href*="leaflet.css"]')) {
       const link = document.createElement("link")
       link.rel = "stylesheet"
@@ -30,7 +37,7 @@ export default function MapComponent({
       document.head.appendChild(link)
     }
 
-    // Dynamically load Leaflet JS
+    // ✅ Load Leaflet JS dynamically
     if (!window.L) {
       const script = document.createElement("script")
       script.src = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"
@@ -58,13 +65,13 @@ export default function MapComponent({
 
     function updateMarkers() {
       if (!map.current) return
-
       const L = window.L
 
-      // Clear existing markers
+      // Clear old markers
       markersRef.current.forEach((marker) => marker.remove())
       markersRef.current = []
 
+      // ✅ Pickup Marker
       const pickupMarker = L.circleMarker([pickupCoords.lat, pickupCoords.lng], {
         radius: 8,
         fillColor: "#22c55e",
@@ -78,6 +85,7 @@ export default function MapComponent({
 
       markersRef.current.push(pickupMarker)
 
+      // ✅ Drop Marker
       const dropMarker = L.circleMarker([dropCoords.lat, dropCoords.lng], {
         radius: 8,
         fillColor: "#ef4444",
@@ -91,6 +99,7 @@ export default function MapComponent({
 
       markersRef.current.push(dropMarker)
 
+      // ✅ Route Line
       const L_polyline = L.polyline(
         [
           [pickupCoords.lat, pickupCoords.lng],
@@ -101,19 +110,16 @@ export default function MapComponent({
           weight: 3,
           opacity: 0.7,
           dashArray: "5, 5",
-        },
+        }
       ).addTo(map.current)
-
       markersRef.current.push(L_polyline)
 
-      const group = new (window.L as any).featureGroup([
-        L.circleMarker([pickupCoords.lat, pickupCoords.lng]),
-        L.circleMarker([dropCoords.lat, dropCoords.lng]),
-      ])
-
+      // ✅ Adjust map bounds to show both
+      const group = new L.featureGroup([pickupMarker, dropMarker])
       map.current.fitBounds(group.getBounds().pad(0.1))
     }
 
+    // ✅ Cleanup on unmount
     return () => {
       if (map.current) {
         map.current.remove()
